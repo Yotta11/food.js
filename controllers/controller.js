@@ -2,7 +2,7 @@ import fs from "fs"
 import path from "path"
 
 
-const foods=[
+let foods=[
     {
         "idFood":1,
         "name":" la Thieboudienne",
@@ -37,28 +37,37 @@ const foods=[
 ];
 const controller={
 
+    createFood: async (req, res) => {
 
-createFood: async (req,res) =>{
-    let idFood='0';
+      let newItems = req.body;
 const {name,description,allergies}=req.body;
+      
+        const data2 = await fs.promises.readFile('./database.json', 'utf8');
+        foods = JSON.parse(data2 || '[]');
 
-idFood=foods.length +1;
-const data = await fs.promises.readFile("./database.json", "utf8",(err,data)=>{
-    if (err) {
-        console.error(err);
-    return ;
-    }else{
-    foods = JSON.parse(data);
-    }
-});
+    
+      // Forcer en tableau si un seul objet est reçu
+      if (!Array.isArray(newItems)) {
+        newItems = [newItems];
+      }
+    
+      
+      let idcourant = foods.length > 0 ? foods[foods.length - 1].idFood : 0;
+    
+      newItems.map((item) => {
+        idcourant += 1;
+        
+        foods.push( {idFood: idcourant,name,description,allergies}
+        
+        );
+      });
+    
+      await fs.promises.writeFile('./database.json', JSON.stringify(foods, null, 2), 'utf8');
+      res.status(201).send(foods); 
+    },
+    
 
 
-foods.push({idFood, name,description,allergies});
-
- await fs.promises.writeFile("./database.json", JSON.stringify(foods, null, 5), "utf8");
-
-res.send(foods)
-},
 
 getAllFood :(req,res) =>{
 
