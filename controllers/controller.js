@@ -1,4 +1,5 @@
 import fs from "fs"
+import path from "path"
 
 
 const foods=[
@@ -37,19 +38,26 @@ const foods=[
 const controller={
 
 
-createFood:(req,res) =>{
-    const idFood=parse(req.params.idFood)
+createFood: async (req,res) =>{
+    let idFood='0';
 const {name,description,allergies}=req.body;
 
 idFood=foods.length +1;
-const data =fs.readFile("./database.json", "utf8");
-foods = JSON.parse(data);
+const data = await fs.promises.readFile("./database.json", "utf8",(err,data)=>{
+    if (err) {
+        console.error(err);
+    return ;
+    }else{
+    foods = JSON.parse(data);
+    }
+});
+
 
 foods.push({idFood, name,description,allergies});
 
- fs.writeFile("./database.json", JSON.stringify(foods, null, 5), "utf8");
+ await fs.promises.writeFile("./database.json", JSON.stringify(foods, null, 5), "utf8");
 
-
+res.send(foods)
 },
 
 getAllFood :(req,res) =>{
