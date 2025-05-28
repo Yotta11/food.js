@@ -45,18 +45,14 @@ const {name,description,allergies}=req.body;
         const data2 = await fs.promises.readFile('./database.json', 'utf8');
         foods = JSON.parse(data2 || '[]');
 
-    
       // Forcer en tableau si un seul objet est reçu
       if (!Array.isArray(newItems)) {
         newItems = [newItems];
       }
-    
-      
-      let idcourant = foods.length > 0 ? foods[foods.length - 1].idFood : 0;
-    
+
+      let idcourant = foods.length + 1;
+
       newItems.map((item) => {
-        idcourant += 1;
-        
         foods.push( {idFood: idcourant,name,description,allergies}
         
         );
@@ -66,9 +62,6 @@ const {name,description,allergies}=req.body;
       res.status(201).send(foods); 
     },
     
-
-
-
 getAllFood :(req,res) =>{
 
 
