@@ -7,8 +7,8 @@ const router=Router();
 
 router.post("/food",controller.createFood);
 router.get("/food",controller.getAllFood);
-router.put("/food/:id",controller.updateFood);
-router.delete("/food/:id",controller.deleteFood);
+router.put("/food/:idFood",controller.updateFood);
+router.delete("/food/:idFood",controller.deleteFood);
 
 
 export default router;

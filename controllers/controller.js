@@ -67,17 +67,58 @@ getAllFood : async (req,res) =>{
     res.status(201).send(foods); 
 },
 
-updateFood: (req,res) =>{
+updateFood: async (req,res) =>{
+    
 
+    const { name,description,allergies} = req.body;
+    const idFood = parseInt(req.params.idFood);
 
+        const data = await fs.promises.readFile("./database.json", "utf8");
+        let foods = JSON.parse(data);
+        let foodUpdated = false;
+
+        for (let i = 0; i < foods.length; i++) {
+            if (parseInt(foods[i].idFood) === idFood) {
+                foods[i].name = name;
+                foods[i].description = description;
+                foods[i].allergies = allergies;
+                foodUpdated = true;
+                break;
+            }
+        }
+
+        if (!foodUpdated) {
+            return res.status(404).json({ message: "food non trouvé" });
+        }
+
+        await fs.promises.writeFile("./database.json", JSON.stringify(foods, null, 2), "utf8");
+        res.status(200).json({ message: "Food mis à jour avec succès" });
 },
-deleteFood: (req,res) =>{
+deleteFood: async (req,res) =>{
+    const idFood = parseInt(req.params.idFood);
 
+    if (!idFood) return res.status(400).json({ error: "ID manquant" });
+        
+        const data = await fs.promises.readFile("./database.json", "utf8");
+        let foods = JSON.parse(data);
 
+    
+        let fooddelete = false;
+
+        for (let i = 0; i < foods.length; i++) {
+            if (parseInt(foods[i].idFood) === idFood) {
+                foods.splice(i, 1);
+                fooddelete = true;
+                break;
+            }
+        }
+        if (!fooddelete) {
+            return res.status(404).json({ message: "book non trouvé" });
+        }
+
+        await fs.promises.writeFile("./database.json", JSON.stringify(foods, null, 5), "utf8");
+        res.status(200).json({ message: "Food supprime avec succès" });
 }
-
-
-
 
 }
 export default controller;
