@@ -62,9 +62,9 @@ const {name,description,allergies}=req.body;
       res.status(201).send(foods); 
     },
     
-getAllFood :(req,res) =>{
-
-
+getAllFood : async (req,res) =>{
+    const data2 = await fs.promises.readFile('./database.json', 'utf8');
+    res.status(201).send(foods); 
 },
 
 updateFood: (req,res) =>{
