@@ -35,6 +35,8 @@ let foods = [
         "allergies": "riz,viande,epices"
     }
 ];
+
+let personnes=[];
 const controller = {
 
     createFood: async (req, res) => {
